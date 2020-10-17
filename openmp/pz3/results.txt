@@ -1,0 +1,17 @@
+Consistently
+Time#1: 40937 ms
+MatrixC norm: 49451
+--------------
+Parallel, 2 threads
+Time#2: 20874 ms
+MatrixC norm: 49451
+--------------
+Parallel, 4 threads
+Time#3: 16085 ms
+MatrixC norm: 49451
+--------------
+Parallel, 6 threads
+Time#4: 12600 ms
+MatrixC norm: 49451
+--------------
+
