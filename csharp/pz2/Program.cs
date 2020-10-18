@@ -8,6 +8,9 @@ namespace pz2
 {
     class Program
     {
+        const string CONSOLE_INPUT = "> ";
+        const string CONSOLE_OUTPUT = ":: ";
+
         static void Main(string[] args)
         {
             University university = new University();
@@ -26,16 +29,15 @@ namespace pz2
                     .Select(studentString => Student.Parse(studentString)))
                 university.Add(student);
 
-            Console.WriteLine("Добро пожаловать в наш интерфейс");
-            Console.WriteLine("Введит <help> для просмотра команд");
+            ConsoleOutput("Добро пожаловать в наш интерфейс");
+            ConsoleOutput("Введит <help> для просмотра команд");
 
             bool isQuit = false;
             string[] input;
 
             while (!isQuit)
             {
-                Console.Write("> ");
-                input = Console.ReadLine().Split();
+                input = ConsoleInput().Split();
 
                 if (input.Length == 1 && input[0] == String.Empty)
                     continue;
@@ -43,65 +45,157 @@ namespace pz2
                 switch (input[0])
                 {
                     case "help":
-                        Console.WriteLine("add {student|teacher|person} [params] - добавить кого-нибудь");
-                        Console.WriteLine("remove {student|teacher|person} [params] - удалить кого-нибудь");
-                        Console.WriteLine("quit - выйти");
+                        ConsoleOutput("add {student|teacher} [params] - добавить кого-нибудь");
+                        ConsoleOutput("remove {student|teacher} [params] - удалить кого-нибудь");
+                        ConsoleOutput("get {students|teachers|persons} [params] - вывести всех студентов/преподавателей/персон");
+                        ConsoleOutput("find lastname [фамилия] - найти персону по фамилии");
+                        ConsoleOutput("find department [название_факультета] - найти преподавателя по факультету");
+                        ConsoleOutput("quit - выйти");
                         break;
 
                     case "add":
-                        // TODO
-                        // It's not working
                         if (input.Length > 1)
                             switch (input[1])
                             {
                                 case "student":
-                                    university.Add(Student.Parse());
+                                    try
+                                    {
+                                        university.Add(Student.Parse(String.Join(" ", input.Skip(2))));
+                                    }
+                                    catch
+                                    {
+                                        ConsoleOutput("Неверный формат ввода студента. Требуемый формат:");
+                                        ConsoleOutput("Имя Отчество Фамилия Курс Группа Средний_Балл Дата_Рождения");
+                                        break;
+                                    }
+                                    ConsoleOutput("Студент успешно добавлен в университет");
+                                    break;
+
+                                case "teacher":
+                                    try
+                                    {
+                                        university.Add(Teacher.Parse(String.Join(" ", input.Skip(2))));
+                                    }
+                                    catch
+                                    {
+                                        ConsoleOutput("Неверный формат ввода преподавателя. Требуемый формат:");
+                                        ConsoleOutput("Имя Отчество Фамилия Факультет Должность Дата_Начала_Деятельности Дата_Рождения");
+                                        break;
+                                    }
+                                    ConsoleOutput("Преподаватель успешно добавлен в университет");
+                                    break;
+
+                                default:
+                                    ConsoleOutput("add {student|teacher|person} [params] - добавить кого-нибудь");
+                                    break;
+                            }
+                        else ConsoleOutput("add {student|teacher} [params] - добавить кого-нибудь");
+                        break;
+
+                    case "remove":
+                        if (input.Length > 1)
+                            switch (input[1])
+                            {
+                                case "student":
+                                    try
+                                    {
+                                        if (university.Remove(Student.Parse(String.Join(" ", input.Skip(2)))))
+                                            ConsoleOutput("Студент успешно отчислен из университета");
+                                        else
+                                            ConsoleOutput("Такого студента в университете не существует");
+                                    }
+                                    catch
+                                    {
+                                        ConsoleOutput("Неверный формат ввода студента. Требуемый формат:");
+                                        ConsoleOutput("Имя Отчество Фамилия Курс Группа Средний_Балл Дата_Рождения");
+                                        break;
+                                    }
+                                    break;
+
+                                case "teacher":
+                                    try
+                                    {
+                                        if (university.Remove(Teacher.Parse(String.Join(" ", input.Skip(2)))))
+                                            ConsoleOutput("Преподаватель успешно уволен из университета");
+                                        else
+                                            ConsoleOutput("Такого преподавателя в университете не существует");
+                                    }
+                                    catch
+                                    {
+                                        ConsoleOutput("Неверный формат ввода преподавателя. Требуемый формат:");
+                                        ConsoleOutput("Имя Отчество Фамилия Факультет Должность Дата_Начала_Деятельности Дата_Рождения");
+                                        break;
+                                    }
+                                    break;
+
+                                default:
+                                    ConsoleOutput("remove {student|teacher|person} [params] - удалить кого-нибудь");
+                                    break;
+                            }
+                        else ConsoleOutput("remove {student|teacher} [params] - удалить кого-нибудь");
+                        break;
+
+                    case "get":
+                        if (input.Length > 1)
+                            switch(input[1])
+                            {
+
+                                case "persons":
+                                    ConsoleOutput("Все персоны:");
+                                    foreach(var person in university.Persons)
+                                        ConsoleOutput(person.ToString());
+                                    break;
+
+                                case "students":
+                                    ConsoleOutput("Все студенты:");
+                                    foreach(var student in university.Students)
+                                        ConsoleOutput(student.ToString());
+                                    break;
+
+                                case "teachers":
+                                    ConsoleOutput("Все преподаватели:");
+                                    foreach(var teacher in university.Teachers)
+                                        ConsoleOutput(teacher.ToString());
+                                    break;
+
+                                default:
+                                    ConsoleOutput("get {students|teachers|persons} [params] - вывести всех студентов/преподавателей/персон");
+                                    break;
 
                             }
-                        else Console.WriteLine("add {student|teacher} [params] - добавить кого-нибудь");
+                        else ConsoleOutput("get {students|teachers|persons} [params] - вывести всех студентов/преподавателей/персон");
+                        break;
 
+                    case "find":
+                        if (input.Length > 1)
+                            switch(input[1])
+                            {
+                                //TODO
+                                case "lastname":
+                                    break;
+
+                                case "department":
+                                    break;
+
+                                default:
+                                    ConsoleOutput("find lastname [фамилия] - найти персону по фамилии");
+                                    ConsoleOutput("find department [название_факультета] - найти преподавателя по факультету");
+                                    break;
+
+                            }
+                        else ConsoleOutput("get {students|teachers|persons} [params] - вывести всех студентов/преподавателей/персон");
                         break;
 
                     case "quit":
-                        Console.WriteLine("Выходим...");
+                        ConsoleOutput("Выходим...");
                         isQuit = true;
                         break;
 
                     default:
-                        Console.WriteLine("Не понимаю, введите <help>");
+                        ConsoleOutput("Не понимаю, введите <help>");
                         break;
                 }
             }
-
-            // Считываем из teachers.txt строки
-            // и преобразует их в экземпляры класса Teacher
-            // и запихивает их в университет
-            foreach (var teacher in File.ReadAllLines("teachers.txt")
-                    .Select(teacherString => Teacher.Parse(teacherString)))
-                university.Add(teacher);
-
-            // Считываем из students.txt строки
-            // и преобразует их в экземпляры класса Student
-            // и призывает их в университет
-            foreach (var student in File.ReadAllLines("students.txt")
-                    .Select(studentString => Student.Parse(studentString)))
-                university.Add(student);
-
-            // Выводим по очереди сначала всех персон,
-            // а затем студентов и учителей
-
-            Console.WriteLine("\nВсе персоны:");
-            foreach(var person in university.Persons)
-                Console.WriteLine(person.ToString());
-
-            Console.WriteLine("\nВсе студенты:");
-            foreach(var student in university.Students)
-                Console.WriteLine(student.ToString());
-
-            Console.WriteLine("\nВсе учителя:");
-            foreach(var teacher in university.Teachers)
-                Console.WriteLine(teacher.ToString());
-
             //university.Remove(university.Teachers);
             //university.Remove((Student) university.Students);
 
@@ -119,6 +213,17 @@ namespace pz2
             Console.WriteLine("Студентов как не было:");
             foreach(var person in university.Persons)
                 Console.WriteLine(person.ToString());
+        }
+
+        static private void ConsoleOutput(string outputText)
+        {
+            Console.WriteLine(CONSOLE_OUTPUT + outputText);
+        }
+
+        static private string ConsoleInput()
+        {
+            Console.Write(CONSOLE_INPUT);
+            return Console.ReadLine();
         }
     }
 
@@ -256,7 +361,7 @@ namespace pz2
     interface IUniversity
     {
         void Add(IPerson person);
-        void Remove(IPerson person);
+        bool Remove(IPerson person);
 
         IEnumerable<IPerson> FindByLastName(string lastName);
         IEnumerable<Teacher> FindByDepartment(string text);
@@ -276,9 +381,11 @@ namespace pz2
             persons.Add(person);
         }
 
-        public void Remove(IPerson person)
+        // Возвращает true, если персона успешно удалена,
+        // в противном случае возвращает false
+        public bool Remove(IPerson person)
         {
-            persons.Remove(person);
+            return persons.Remove(person);
         }
 
         public IEnumerable<IPerson> FindByLastName(string lastName)
