@@ -5,17 +5,24 @@
 using namespace std;
 
 
-const long long SIZE = 80;
+const long long SIZE = 10;
 
 void fill_vec(double* vec);
+double vec_multiply(double* vec1, double* vec2);
 double vec_norm(double* vec);
+void fill_matrix(double* matrix);
 
 
 int main(int argc, char** argv)
 {
-    double* vec = new double[SIZE];
+    double* vec1 = new double[SIZE];
+    double* vec2 = new double[SIZE];
+    double* matrix = new double[SIZE * SIZE];
+
+    fill_vec(vec1);
+    fill_matrix(matrix);
+
     MPI_Status stat;
-    double norm;
 
     // Initialize the MPI environment
     MPI_Init(NULL, NULL);
@@ -28,22 +35,38 @@ int main(int argc, char** argv)
     int world_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
-    if (world_rank == 0)
+    int* divider = new int[world_size];
+    int* offsets = new int[world_size];
+
+    for (int i = 0; i < world_size; i++)
     {
-        for (int i = 1; i < world_size; i++)
-        {
-            MPI_Recv (&norm, 1, MPI_DOUBLE, i, 1, MPI_COMM_WORLD, &stat);
-            cout << i << ":\t" << norm << endl;
-        }
-    }
-    else
-    {
-        fill_vec(vec);
-        norm = vec_norm(vec);
-        MPI_Send(&norm, 1, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
+        divider[i] = (SIZE / world_size + (SIZE % world_size > i ? 1 : 0)) * SIZE;
+        if (world_rank == 0) cout << divider[i] << " ";
     }
 
-    // Finalize the MPI environment.
+    double* vec2_part = new double[divider[world_rank]];
+
+    // TODO
+    // Сделать пиздато
+    //MPI_Scatter(matrix, divider, MPI_DOUBLE, MPI_COMM_WORLD);
+
+    //double* vec_rec = new double[SIZE];
+    //double sum;
+
+    //for (int i = 0; i < SIZE; i += world_size) 
+    //{
+    //        MPI_Scatter(&matrix[i], SIZE, MPI_DOUBLE, vec_rec, SIZE, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    //        vec2[i + world_rank] = vec_multiply(vec_rec, vec1);
+
+    //        cout << i + world_rank << " ";
+    //}
+
+    //if (world_rank == 0)
+    //{
+    //    for (int i = 0; i < SIZE; i++)
+    //        cout << vec2[i] << "\n";
+    //}
+    //// Finalize the MPI environment.
     MPI_Finalize();
 }
 
@@ -55,14 +78,19 @@ void fill_vec(double* vec)
 }
 
 
-double vec_norm(double* vec)
+void fill_matrix(double* matrix)
 {
-    double norm = 0;
+    for (int i = 0; i < SIZE * SIZE; i++)
+        matrix[i] = rand() % 10;
+}
 
-    for (int i = 0; i < SIZE; i++)
-        norm += pow(vec[i], 2);
 
-    norm = sqrt(norm);
+double vec_multiply(double* vec1, double* vec2)
+{
+    double sum = 0;
 
-    return norm;
+    for (unsigned int i = 0; i < SIZE; i++)
+        sum += vec1[i] * vec2[i];
+
+    return sum;
 }
