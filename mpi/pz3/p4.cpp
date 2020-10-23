@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     }
 
     // Split and send subvectors to processes
-    MPI_Scatterv(vec, vec_sizes, disps, MPI_DOUBLE, vec_part, vec_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Scatterv(vec, vec_sizes, disps, DOUBLE, vec_part, vec_size, DOUBLE, 0, MPI_COMM_WORLD);
 
     // Get scalar multiplication for the part of gotten vector
     double scalar = get_scalar(vec_part, vec_size); 
