@@ -13,7 +13,12 @@ namespace pz2
 
         static void Main(string[] args)
         {
+            ConsoleOutput("Добро пожаловать в наш СуперКрутойКонсольныйИнтерфейс™");
+            ConsoleOutput("Строим университет...");
+
             University university = new University();
+
+            ConsoleOutput("Загружаем стандартный набор преподователей и студентов для развлечений");
 
             // Считываем из teachers.txt строки
             // и преобразует их в экземпляры класса Teacher
@@ -29,7 +34,7 @@ namespace pz2
                     .Select(studentString => Student.Parse(studentString)))
                 university.Add(student);
 
-            ConsoleOutput("Добро пожаловать в наш интерфейс");
+            ConsoleOutput("Университет создан!");
             ConsoleOutput("Введит <help> для просмотра команд");
 
             bool isQuit = false;
@@ -223,23 +228,6 @@ namespace pz2
                         break;
                 }
             }
-            //university.Remove(university.Teachers);
-            //university.Remove((Student) university.Students);
-
-            Console.WriteLine("\nИщем всех Пупкиных");
-            foreach (var person in university.FindByLastName("Пупкин"))
-                Console.WriteLine(person.ToString());
-
-            // Пускаем волну отчислений
-            Console.WriteLine("\nПускаем волну отчислений");
-
-            foreach(var student in university.Students)
-                university.Remove(student);
-
-
-            Console.WriteLine("Студентов как не было:");
-            foreach(var person in university.Persons)
-                Console.WriteLine(person.ToString());
         }
 
         static private void ConsoleOutput(string outputText)
