@@ -61,28 +61,26 @@ namespace pz2
                                     try
                                     {
                                         university.Add(Student.Parse(String.Join(" ", input.Skip(2))));
+                                        ConsoleOutput("Студент успешно добавлен в университет");
                                     }
                                     catch
                                     {
                                         ConsoleOutput("Неверный формат ввода студента. Требуемый формат:");
                                         ConsoleOutput("Имя Отчество Фамилия Курс Группа Средний_Балл Дата_Рождения");
-                                        break;
                                     }
-                                    ConsoleOutput("Студент успешно добавлен в университет");
                                     break;
 
                                 case "teacher":
                                     try
                                     {
                                         university.Add(Teacher.Parse(String.Join(" ", input.Skip(2))));
+                                        ConsoleOutput("Преподаватель успешно добавлен в университет");
                                     }
                                     catch
                                     {
                                         ConsoleOutput("Неверный формат ввода преподавателя. Требуемый формат:");
                                         ConsoleOutput("Имя Отчество Фамилия Факультет Должность Дата_Начала_Деятельности Дата_Рождения");
-                                        break;
                                     }
-                                    ConsoleOutput("Преподаватель успешно добавлен в университет");
                                     break;
 
                                 default:
@@ -99,7 +97,18 @@ namespace pz2
                                 case "student":
                                     try
                                     {
-                                        if (university.Remove(Student.Parse(String.Join(" ", input.Skip(2)))))
+                                        bool isRemoved = false;
+                                        var studentToRemove = Student.Parse(String.Join(" ", input.Skip(2)));
+
+                                        foreach(var student in university.Students)
+                                            if (studentToRemove.Equals(student))
+                                            {
+                                                isRemoved = true;
+                                                university.Remove(student);
+                                                break;
+                                            }
+
+                                        if (isRemoved)
                                             ConsoleOutput("Студент успешно отчислен из университета");
                                         else
                                             ConsoleOutput("Такого студента в университете не существует");
@@ -108,14 +117,24 @@ namespace pz2
                                     {
                                         ConsoleOutput("Неверный формат ввода студента. Требуемый формат:");
                                         ConsoleOutput("Имя Отчество Фамилия Курс Группа Средний_Балл Дата_Рождения");
-                                        break;
                                     }
                                     break;
 
                                 case "teacher":
                                     try
                                     {
-                                        if (university.Remove(Teacher.Parse(String.Join(" ", input.Skip(2)))))
+                                        bool isRemoved = false;
+                                        var teacherToRemove = Teacher.Parse(String.Join(" ", input.Skip(2)));
+
+                                        foreach(var teacher in university.Teachers)
+                                            if (teacherToRemove.Equals(teacher))
+                                            {
+                                                isRemoved = true;
+                                                university.Remove(teacher);
+                                                break;
+                                            }
+
+                                        if (isRemoved)
                                             ConsoleOutput("Преподаватель успешно уволен из университета");
                                         else
                                             ConsoleOutput("Такого преподавателя в университете не существует");
@@ -124,7 +143,6 @@ namespace pz2
                                     {
                                         ConsoleOutput("Неверный формат ввода преподавателя. Требуемый формат:");
                                         ConsoleOutput("Имя Отчество Фамилия Факультет Должность Дата_Начала_Деятельности Дата_Рождения");
-                                        break;
                                     }
                                     break;
 
@@ -170,11 +188,20 @@ namespace pz2
                         if (input.Length > 1)
                             switch(input[1])
                             {
-                                //TODO
                                 case "lastname":
+                                    if (input.Length > 2)
+                                        foreach (var person in university.FindByLastName(input[2]))
+                                            ConsoleOutput(person.ToString());
+                                    else
+                                        ConsoleOutput("find lastname [фамилия] - найти персону по фамилии");
                                     break;
 
                                 case "department":
+                                    if (input.Length > 2)
+                                        foreach (var person in university.FindByDepartment(input[2]))
+                                            ConsoleOutput(person.ToString());
+                                    else
+                                        ConsoleOutput("find lastname [фамилия] - найти персону по фамилии");
                                     break;
 
                                 default:
@@ -275,6 +302,17 @@ namespace pz2
             return student;
         }
 
+        public bool Equals(Student student)
+        {
+            if (Name == student.Name && Patronomic == student.Patronomic &&
+                    LastName == student.LastName && Date == student.Date &&
+                    Course == student.Course && Group == student.Group &&
+                    AvarangeGrade == student.AvarangeGrade
+               )
+                return true;
+            return false;
+        }
+
         public override string ToString()
         {
             string result = $"{Name} {Patronomic} {LastName}, {Course} c., {Group} gr., av. grade {AvarangeGrade}, birhday: {Date.ToString(@"dd/MM/yyyy")}";
@@ -332,6 +370,17 @@ namespace pz2
                     );
 
             return teacher;
+        }
+
+        public bool Equals(Teacher teacher)
+        {
+            if (Name == teacher.Name && Patronomic == teacher.Patronomic &&
+                    LastName == teacher.LastName && Date == teacher.Date &&
+                    Department == teacher.Department && Position == teacher.Position &&
+                    JobPlacement == teacher.JobPlacement
+               )
+                return true;
+            return false;
         }
 
         public override string ToString()
