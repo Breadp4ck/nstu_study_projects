@@ -152,7 +152,7 @@ namespace pz2
                                     break;
 
                                 default:
-                                    ConsoleOutput("remove {student|teacher|person} [params] - удалить кого-нибудь");
+                                    ConsoleOutput("remove {student|teacher} [params] - удалить кого-нибудь");
                                     break;
                             }
                         else ConsoleOutput("remove {student|teacher} [params] - удалить кого-нибудь");
@@ -215,8 +215,11 @@ namespace pz2
                                     break;
 
                             }
-                        else ConsoleOutput("get {students|teachers|persons} [params] - вывести всех студентов/преподавателей/персон");
-                        break;
+                        else 
+                        {
+                            ConsoleOutput("find lastname [фамилия] - найти персону по фамилии");
+                            ConsoleOutput("find department [название_факультета] - найти преподавателя по факультету");
+                        }                        break;
 
                     case "quit":
                         ConsoleOutput("Выходим...");
@@ -237,7 +240,10 @@ namespace pz2
 
         static private string ConsoleInput()
         {
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write(CONSOLE_INPUT);
+
+            Console.ForegroundColor = ConsoleColor.White;
             return Console.ReadLine();
         }
     }
