@@ -1,45 +1,15 @@
 using System;
 
-namespace pz3
+namespace MathCalculator
 {
     class Program
     {
-        static void Main(string args[])
+        static void Main(string[] args)
         {
+            Constant ct = new Constant();
+
+            Console.WriteLine("Hello world!");
 
         }
-    }
-
-    interface IExpr
-    {
-        double Compute(IReadOnlyDictionary<string, double> variableValues);
-        IEnumerable<string> Variables { get; }
-        bool IsConstant { get; }
-        bool IsPolynom { get; }
-    }
-
-    abstract class UnaryOperation
-    {
-
-    }
-
-    abstract class BinaryOperation
-    {
-
-    }
-
-    abstract class Function
-    {
-
-    }
-
-    class Variable
-    {
-
-    }
-
-    class Constant
-    {
-
     }
 }
