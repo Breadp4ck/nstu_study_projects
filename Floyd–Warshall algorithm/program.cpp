@@ -7,8 +7,9 @@
 using namespace std;
 
 void create_transitive_closure_singlethreaded(bool** matrix, unsigned short size);
-void create_transitive_closure_multithreaded(bool** matrix, unsigned short size);
+void create_transitive_closure_multithreaded(bool** matrix, unsigned short size, int threads);
 double get_readable_time(struct timespec *start, struct timespec *finish);
+void output_matrix(bool** matrix, unsigned short size);
 
 
 int main()
@@ -18,16 +19,18 @@ int main()
 
     cout << "Write filename: ";
 
-    string filename;
-    cin >> filename;
+    string input;
+    cin >> input;
 
-    ifstream fin(filename);
+    ifstream fin(input);
 
-    short output_matrices;
-    cout << "\nWrite 0 if you want to output matrices" << endl;
-    cout << "or any another to hide them: ";
+    bool output_matrices;
+    cout << "\nDo you want to output matrices? (y/n): ";
 
-    cin >> output_matrices;
+    cin >> input;
+    if (input == "y") output_matrices = true;
+    else if (input == "n") output_matrices = false;
+    else throw "PROGRAM IS SHUTTING DOWN!!!";
 
     unsigned short size_vertexes, size_edges;
     unsigned short temp;
@@ -47,44 +50,47 @@ int main()
     }    
 
     // Output matrix
-    if (output_matrices == 0)
+    if (output_matrices)
     {
         cout << "\nFilled matrix: " << endl;
-        for (unsigned short y = 0; y < size_vertexes; y++)
-        {
-            for (unsigned short x = 0; x < size_vertexes; x++)
-                if (matrix[x][y]) cout << "1 ";
-                else cout << "0 ";
-            cout << endl;
-        }
+        output_matrix(matrix, size_vertexes);
     }
 
     // Create transitive closure
-    cout << endl << "Write 0 if you want to run programm in single thread" << endl;
-    cout << "or any another if you want to run programm in several: ";
+    cout << endl << "How many threads you want to use? (single/several): ";
 
-    int i;
-    cin >> i;
+    cin >> input;
 
-    clock_gettime(CLOCK_REALTIME, &cl_start);
 
-    if (i == 0) create_transitive_closure_singlethreaded(matrix, size_vertexes);
-    else  create_transitive_closure_multithreaded(matrix, size_vertexes);
+    if (input == "single")
+    {
+        clock_gettime(CLOCK_REALTIME, &cl_start);
+        create_transitive_closure_singlethreaded(matrix, size_vertexes);
+    }
+    else if (input == "several")
+    {
+        int threads_number;
+
+        cout << "\nWrite count of threads: ";
+        cin >> threads_number;
+
+        clock_gettime(CLOCK_REALTIME, &cl_start);
+        create_transitive_closure_multithreaded(matrix, size_vertexes, threads_number);
+    }
+    else
+    {
+        throw "PROGRAM IS SHUTTING DOWN!!!";
+    }
 
     clock_gettime(CLOCK_REALTIME, &cl_end);
+    cout << "\nTime: ";
     cout << fixed << setprecision(6) << get_readable_time(&cl_start, &cl_end) << " sec." << endl;
 
     // Output transitive closure
-    if (output_matrices == 0)
+    if (output_matrices)
     {
         cout << "\nTransitive closure matrix:" << endl;
-        for (unsigned short y = 0; y < size_vertexes; y++)
-        {
-            for (unsigned short x = 0; x < size_vertexes; x++)
-                if (matrix[x][y]) cout << "1 ";
-                else cout << "0 ";
-            cout << endl;
-        }
+        output_matrix(matrix, size_vertexes);
     }
 
     return 0;
@@ -100,10 +106,10 @@ void create_transitive_closure_singlethreaded(bool** matrix, unsigned short size
 }
 
 
-void create_transitive_closure_multithreaded(bool** matrix, unsigned short size)
+void create_transitive_closure_multithreaded(bool** matrix, unsigned short size, int threads)
 {
     for (unsigned short i = 0; i < size; i++)
-#pragma omp parallel num_threads(4)
+#pragma omp parallel num_threads(threads)
 #pragma omp for
         for (unsigned short s = 0; s < size; s++)
             for (unsigned short t = 0; t < size; t++)
@@ -116,4 +122,16 @@ double get_readable_time(struct timespec *start, struct timespec *finish)
     long int sec = finish->tv_sec - start->tv_sec;
     long int ns = finish->tv_nsec - start->tv_nsec;
     return sec + (double) ns / 1000000000;
+}
+
+
+void output_matrix(bool** matrix, unsigned short size)
+{
+    for (unsigned short y = 0; y < size; y++)
+    {
+        for (unsigned short x = 0; x < size; x++)
+            if (matrix[x][y]) cout << "1 ";
+            else cout << "0 ";
+        cout << endl;
+    }
 }
