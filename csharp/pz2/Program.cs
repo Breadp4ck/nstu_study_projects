@@ -415,7 +415,7 @@ namespace pz2
     }
 
 
-    class University
+    class University : IUniversity
     {
         private List<IPerson> persons = new List<IPerson>();
 
