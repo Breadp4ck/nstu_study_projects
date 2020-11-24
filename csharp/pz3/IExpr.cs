@@ -17,5 +17,14 @@ namespace MathCalculator
         public IEnumerable<string> Variables { get; }
         public bool IsConstant { get; }
         public bool IsPolynom { get; }
+
+        public static Expr operator+(Expr variable1, Expr variable2)
+            => new Add(variable1, variable2);
+        public static Expr operator-(Expr variable1, Expr variable2)
+            => new Sub(variable1, variable2);
+        public static Expr operator*(Expr variable1, Expr variable2)
+            => new Mult(variable1, variable2);
+        public static Expr operator/(Expr variable1, Expr variable2)
+            => new Divide(variable1, variable2);
     }
 }
