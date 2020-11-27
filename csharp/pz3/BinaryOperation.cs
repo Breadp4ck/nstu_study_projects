@@ -30,6 +30,8 @@ namespace MathCalculator
         public Add(Expr argument1, Expr argument2) : base(argument1, argument2) { }
         public override double Compute(IReadOnlyDictionary<string, double> variableValues)
             => Argument1.Compute(variableValues) + Argument2.Compute(variableValues);
+        public override string ToString()
+            => $"{Argument1} + {Argument2}";
     }
 
     class Sub : BinaryOperation
@@ -37,6 +39,8 @@ namespace MathCalculator
         public Sub(Expr argument1, Expr argument2) : base(argument1, argument2) { }
         public override double Compute(IReadOnlyDictionary<string, double> variableValues)
             => Argument1.Compute(variableValues) - Argument2.Compute(variableValues);
+        public override string ToString()
+            => $"{Argument1} - {Argument2}";
     }
 
     class Mult : BinaryOperation
@@ -44,6 +48,8 @@ namespace MathCalculator
         public Mult(Expr argument1, Expr argument2) : base(argument1, argument2) { }
         public override double Compute(IReadOnlyDictionary<string, double> variableValues)
             => Argument1.Compute(variableValues) * Argument2.Compute(variableValues);
+        public override string ToString()
+            => $"{Argument1} * {Argument2}";
     }
 
     class Divide : BinaryOperation
@@ -51,5 +57,7 @@ namespace MathCalculator
         public Divide(Expr argument1, Expr argument2) : base(argument1, argument2) { }
         public override double Compute(IReadOnlyDictionary<string, double> variableValues)
             => Argument1.Compute(variableValues) / Argument2.Compute(variableValues);
+        public override string ToString()
+            => $"{Argument1} / {Argument2}";
     }
 }

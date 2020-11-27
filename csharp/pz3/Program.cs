@@ -7,6 +7,7 @@ namespace MathCalculator
     {
         static void Main(string[] args)
         {
+            // the 8th option, inverse trigonometric functions
             Variable a = new Variable("a");
             Variable b = new Variable("b");
             Constant c = new Constant(5);
