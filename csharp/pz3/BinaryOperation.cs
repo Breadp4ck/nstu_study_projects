@@ -43,6 +43,8 @@ namespace MathCalculator
             => $"{Argument1} - {Argument2}";
     }
 
+    //TODO
+    //Create brackets for polynoms
     class Mult : BinaryOperation
     {
         public Mult(Expr argument1, Expr argument2) : base(argument1, argument2) { }

@@ -8,9 +8,9 @@ namespace MathCalculator
         static void Main(string[] args)
         {
             // the 8th option, inverse trigonometric functions
-            //Variable a = new Variable("a");
-            //Variable b = new Variable("b");
-            //Constant c = new Constant(5);
+            Variable a = new Variable("a");
+            Variable b = new Variable("b");
+            Constant c = new Constant(5);
 
             //var exp = new Add(a, (new Add(c, b)));
             //var exp = a * b + c;
@@ -24,11 +24,11 @@ namespace MathCalculator
             //var exp1 = (new Add(c, new Add(a1, b1)));
             //Console.WriteLine(exp1.Compute(null));
 
-            Constant a = new Constant(10);
+            var expr = (a + b) / c;
+            var s = new Vector(new Expr[] {expr, expr, expr});
 
-            var exp = -(-a);
-            Console.WriteLine(exp.Compute(null));
-            Console.WriteLine(exp);
+            Console.WriteLine(s.Compute(null));
+            Console.WriteLine(s);
         }
     }
 }
