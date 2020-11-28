@@ -18,6 +18,11 @@ namespace MathCalculator
         public bool IsConstant { get; }
         public bool IsPolynom { get; }
 
+        public static Expr operator+(Expr variable)
+            => variable;
+        public static Expr operator-(Expr variable)
+            => new Invert(variable);
+
         public static Expr operator+(Expr variable1, Expr variable2)
             => new Add(variable1, variable2);
         public static Expr operator-(Expr variable1, Expr variable2)

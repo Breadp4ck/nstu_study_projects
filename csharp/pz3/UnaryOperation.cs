@@ -21,4 +21,13 @@ namespace MathCalculator
 
         public Expr Argument { get; }
     }
+
+    class Invert : UnaryOperation
+    {
+        public Invert(Expr argument) : base(argument) { }
+        public override double Compute(IReadOnlyDictionary<string, double> variableValues)
+            => (new Mult(Argument, new Constant(-1))).Compute(variableValues);
+        public override string ToString()
+            => $"-({Argument})";
+    }
 }
